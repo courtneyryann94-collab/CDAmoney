@@ -21,29 +21,29 @@
     <section class="hero">
         <h2>Fast & Secure Lending Solutions</h2>
         <p>Get the funds you need with flexible terms and competitive rates</p>
-        <a href="#" class="btn">Apply Now</a>
+        <a href="#" id="apply-btn" class="btn">Apply Now</a>
     </section>
     
     <section id="services" class="container">
         <h2 class="section-title">Our Services</h2>
         <div class="services">
             <div class="service-card">
-                <h3>Commercial Real Estate Loans</h3>
-                <p>Financing for purchasing, improving, or refinancing commercial real estate properties</p>
+                <h3>Real Estate Investment loans</h3>
+                <p>2nd Homes, Rental Properties for purchase or refinance and  Multi-Family Properties</p>
             </div>
             <div class="service-card">
-                <h3>Residential Real Estate Loans</h3>
-                <p>Financing for purchasing or refinancing residential properties</p>
+                <h3>Construction Loans</h3>
+                <p>Loans for new construction, rehabilitation or additions</p>
             </div>
             <div class="service-card">
-                <h3>Owner Occupied Loans</h3>
-                <p>Financing for individuals who occupy the property as their primary residence</p>
+                <h3>Commercial Property loans for business</h3>
+                <p>Financing for commercial real estate properties used for business purposes</p>
             </div>
         </div>
     </section>
     <section id="about" class="container">
         <h2 class="section-title">About Us</h2>
-        <p>At Private Money Coeur d 'Alene Inc., we are committed to providing our clients with fast, reliable, and secure lending solutions. With years of experience in the financial industry, we understand the unique needs of our customers and strive to offer personalized service that exceeds expectations. Whether you're looking for a personal loan, business financing, or emergency funds, we are here to help you achieve your financial goals.</p>
+        <p>We are a trusted lending solution provider in Coeur d'Alene, offering fast and secure financing options for various real estate needs.</p>
     </section>
     <section id="contact" class="container">
         <h2 class="section-title">Contact Us</h2>
@@ -66,6 +66,41 @@
 
     <footer>
         <p>&copy; 2024 Private Money Coeur d 'Alene Inc All rights reserved.</p>
+        <p class="admin-login"><a id="employee-login-link" href="/login">Employee login</a></p>
     </footer>
+
+    <div id="loan-modal" class="modal" aria-hidden="true">
+        <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="loan-modal-title">
+            <button type="button" id="loan-modal-close" class="modal-close" aria-label="Close application window">×</button>
+            <h2 id="loan-modal-title">Quick Loan Application</h2>
+            <p>Please tell us what kind of loan you need and how to contact you.</p>
+            <form id="loan-form">
+                <label for="loan-type">Loan type</label>
+                <select id="loan-type" name="loan-type" required>
+                    <option value="">Select a loan type</option>
+                    <option value="Real Estate Investment">Real Estate Investment</option>
+                    <option value="Construction Loan">Construction Loan</option>
+                    <option value="Commercial Property Loan">Commercial Property Loan</option>
+                    <option value="Other">Other</option>
+                </select>
+
+                <label for="full-name">Full name</label>
+                <input type="text" id="full-name" name="full-name" placeholder="Your name" required>
+
+                <label for="email">Email address</label>
+                <input type="email" id="email" name="email" placeholder="you@example.com" required>
+
+                <label for="phone">Phone number</label>
+                <input type="tel" id="phone" name="phone" placeholder="(208) 555-1234" required>
+
+                <label for="details">Additional details</label>
+                <textarea id="details" name="details" placeholder="Tell us a bit more about your loan request"></textarea>
+
+                <button type="submit" class="btn">Send Application</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
 </body>
 </html>

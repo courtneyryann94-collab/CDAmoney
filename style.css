@@ -191,6 +191,21 @@ footer {
     font-size: 0.95rem;
 }
 
+.admin-login {
+    margin-top: 0.75rem;
+    font-size: 0.8rem;
+    opacity: 0.65;
+}
+
+.admin-login a {
+    color: rgba(255, 255, 255, 0.75);
+    text-decoration: none;
+}
+
+.admin-login a:hover {
+    opacity: 1;
+}
+
 @media (max-width: 900px) {
     .hero {
         padding: 4rem 1.25rem 3.5rem;
@@ -239,3 +254,87 @@ footer {
         max-width: 100%;
     }
 }
+
+.modal {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.65);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+    z-index: 100;
+}
+
+.modal.open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-content {
+    width: min(560px, 100%);
+    background: #fff;
+    border-radius: 18px;
+    padding: 2rem;
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.22);
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: transparent;
+    border: none;
+    font-size: 1.6rem;
+    color: #333;
+    cursor: pointer;
+}
+
+#loan-form {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+#loan-form label {
+    font-weight: 600;
+    color: #333;
+}
+
+#loan-form input,
+#loan-form select,
+#loan-form textarea,
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="password"] {
+    width: 100%;
+    border: 1px solid #d5d7dc;
+    border-radius: 10px;
+    padding: 0.9rem 1rem;
+    font: inherit;
+    color: #2d2d2d;
+    background: #fafafa;
+}
+
+#loan-form textarea,
+textarea {
+    min-height: 110px;
+    resize: vertical;
+}
+
+#loan-form button.btn,
+button.btn {
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
+body.modal-open {
+    overflow: hidden;
+}
+

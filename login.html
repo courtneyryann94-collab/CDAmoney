@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - CDAmoney</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <h1>Private Money Coeur d 'Alene Inc.</h1>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+            </ul>
+        </nav>
+    </header>
+    <section class="container" style="padding-top: 3rem; padding-bottom: 3rem;">
+        <div class="service-card" style="max-width: 480px; margin: 0 auto;">
+            <h2>Employee Login</h2>
+            <p>Please sign in to access loan applications.</p>
+            <p style="font-size: 0.95rem; color: #555; margin-bottom: 1rem;">New employee accounts can be created from the admin dashboard after signing in.</p>
+            <form method="post" action="/login">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+
+                <button type="submit" class="btn">Sign In</button>
+            </form>
+            <p id="error-message" style="color: #d64545; margin-top: 1rem;"></p>
+        </div>
+    </section>
+    <footer>
+        <p>&copy; 2024 Private Money Coeur d 'Alene Inc All rights reserved.</p>
+    </footer>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('error')) {
+            document.getElementById('error-message').textContent = 'Login failed. Please check your username and password.';
+        }
+    </script>
+</body>
+</html>
