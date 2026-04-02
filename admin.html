@@ -25,6 +25,21 @@
         <p>&copy; 2024 Private Money Coeur d 'Alene Inc All rights reserved.</p>
     </footer>
     <script>
+        async function checkIfAdmin() {
+            try {
+                const response = await fetch('/api/current-user');
+                if (response.status === 401) {
+                    window.location.href = '/login';
+                    return false;
+                }
+                const user = await response.json();
+                return user.isAdmin;
+            } catch (error) {
+                console.error('Failed to check user role:', error);
+                return false;
+            }
+        }
+
         async function loadApplications() {
             const appList = document.getElementById('app-list');
             appList.innerHTML = '<p>Loading applications...</p>';
@@ -66,50 +81,58 @@
             }
         }
 
-        loadApplications();
+        async function initializePage() {
+            const addUserBtn = document.getElementById('add-user-btn');
+            const isAdmin = await checkIfAdmin();
 
-        const addUserBtn = document.getElementById('add-user-btn');
-        const addUserMessage = document.getElementById('add-user-message');
+            if (!isAdmin) {
+                addUserBtn.style.display = 'none';
+            } else {
+                const addUserMessage = document.getElementById('add-user-message');
 
-        if (addUserBtn) {
-            addUserBtn.addEventListener('click', async () => {
-                addUserMessage.textContent = '';
+                addUserBtn.addEventListener('click', async () => {
+                    addUserMessage.textContent = '';
 
-                const username = window.prompt('Enter a username for the new employee:');
-                if (!username) {
-                    return;
-                }
-
-                const password = window.prompt('Enter a password for the new employee:');
-                if (!password) {
-                    return;
-                }
-
-                try {
-                    const response = await fetch('/api/users', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ username: username.trim(), password: password.trim() }),
-                    });
-
-                    const result = await response.json();
-                    if (!response.ok) {
-                        addUserMessage.style.color = '#d64545';
-                        addUserMessage.textContent = result.error || 'Unable to create login.';
+                    const username = window.prompt('Enter a username for the new employee:');
+                    if (!username) {
                         return;
                     }
 
-                    addUserMessage.style.color = '#2a8f2a';
-                    addUserMessage.textContent = `Employee login created for ${result.username}.`;
-                } catch (error) {
-                    console.error(error);
-                    addUserMessage.style.color = '#d64545';
-                    addUserMessage.textContent = 'A network error occurred. Please try again.';
-                }
-            });
+                    const password = window.prompt('Enter a password for the new employee:');
+                    if (!password) {
+                        return;
+                    }
+
+                    try {
+                        const response = await fetch('/api/users', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ username: username.trim(), password: password.trim() }),
+                        });
+
+                        const result = await response.json();
+                        if (!response.ok) {
+                            addUserMessage.style.color = '#d64545';
+                            addUserMessage.textContent = result.error || 'Unable to create login.';
+                            return;
+                        }
+
+                        addUserMessage.style.color = '#2a8f2a';
+                        addUserMessage.textContent = `Employee login created for ${result.username}.`;
+                    } catch (error) {
+                        console.error(error);
+                        addUserMessage.style.color = '#d64545';
+                        addUserMessage.textContent = 'A network error occurred. Please try again.';
+                    }
+                });
+            }
+
+            loadApplications();
         }
+
+        initializePage();
     </script>
 </body>
 </html>
