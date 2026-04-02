@@ -189,6 +189,7 @@ app.post('/login', async (req, res) => {
 
     if (user && verifyPassword(password, user)) {
         req.session.authenticated = true;
+        req.session.username = username;
         return res.redirect('/admin');
     }
 
@@ -197,6 +198,12 @@ app.post('/login', async (req, res) => {
 
 app.post('/api/users', requireAuth, async (req, res) => {
     const { username, password } = req.body;
+    const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
+
+    // Only allow admin to create new users
+    if (req.session.username !== ADMIN_USERNAME) {
+        return res.status(403).json({ error: 'Only admin can create new employee accounts.' });
+    }
 
     if (!username || !password) {
         return res.status(400).json({ error: 'Username and password are required.' });
@@ -212,6 +219,14 @@ app.post('/api/users', requireAuth, async (req, res) => {
     await writeUsers(users);
 
     return res.status(201).json({ success: true, username: newUser.username });
+});
+
+app.get('/api/current-user', requireAuth, async (req, res) => {
+    const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
+    return res.json({
+        username: req.session.username,
+        isAdmin: req.session.username === ADMIN_USERNAME
+    });
 });
 
 app.get('/logout', (req, res) => {
