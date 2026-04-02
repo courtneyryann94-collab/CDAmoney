@@ -17,8 +17,12 @@
         </nav>
     </header>
     <section class="container" style="padding-top: 2.5rem; padding-bottom: 2.5rem;">
-        <h2 class="section-title">Submitted Applications</h2>
+        <h2 class="section-title">Submitted Loan Applications</h2>
         <div id="app-list"></div>
+    </section>
+    <section class="container" style="padding-top: 2.5rem; padding-bottom: 2.5rem;">
+        <h2 class="section-title">Investor Contacts</h2>
+        <div id="investor-list"></div>
         <p id="add-user-message" style="margin-top: 1rem; color: #333;"></p>
     </section>
     <footer>
@@ -81,6 +85,49 @@
             }
         }
 
+        async function loadInvestorApplications() {
+            const investorList = document.getElementById('investor-list');
+            investorList.innerHTML = '<p>Loading investor contacts...</p>';
+
+            try {
+                const response = await fetch('/api/investor-applications');
+                if (response.status === 401) {
+                    window.location.href = '/login';
+                    return;
+                }
+
+                const applications = await response.json();
+                if (!applications.length) {
+                    investorList.innerHTML = '<p>No investor contacts have been submitted yet.</p>';
+                    return;
+                }
+
+                investorList.innerHTML = '';
+                applications
+                    .slice()
+                    .reverse()
+                    .forEach((application) => {
+                        const card = document.createElement('div');
+                        card.className = 'service-card';
+                        const createdAt = new Date(application.createdAt).toLocaleString();
+                        card.innerHTML = `
+                            <h3>${application.investorName}</h3>
+                            <p><strong>Company:</strong> ${application.company || '<em>Not provided</em>'}</p>
+                            <p><strong>Email:</strong> <a href="mailto:${application.email}">${application.email}</a></p>
+                            <p><strong>Phone:</strong> ${application.phone}</p>
+                            <p><strong>Submitted:</strong> ${createdAt}</p>
+                            <p><strong>Interest:</strong><br>${application.details || '<em>No additional details provided.</em>'}</p>
+                        `;
+                        investorList.appendChild(card);
+                    });
+            } catch (error) {
+                console.error(error);
+                investorList.innerHTML = '<p>Unable to load investor contacts right now. Please try again later.</p>';
+            }
+        }
+
+        loadApplications();
+        loadInvestorApplications();
         async function initializePage() {
             const addUserBtn = document.getElementById('add-user-btn');
             const isAdmin = await checkIfAdmin();

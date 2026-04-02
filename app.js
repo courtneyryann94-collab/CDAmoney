@@ -3,6 +3,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('loan-modal');
     const closeButton = document.getElementById('loan-modal-close');
     const form = document.getElementById('loan-form');
+    const investorBtn = document.getElementById('investor-btn');
+    const investorModal = document.getElementById('investor-modal');
+    const investorClose = document.getElementById('investor-modal-close');
+    const investorForm = document.getElementById('investor-form');
     const ADMIN_EMAIL = 'stevenhuffakercda@gmail.com';
 
     if (!applyBtn || !modal || !closeButton || !form) {
@@ -19,8 +23,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function closeModal() {
         modal.classList.remove('open');
+        investorModal.classList.remove('open');
         document.body.classList.remove('modal-open');
         modal.setAttribute('aria-hidden', 'true');
+        investorModal.setAttribute('aria-hidden', 'true');
+    }
+
+    function openInvestorModal(event) {
+        event.preventDefault();
+        investorModal.classList.add('open');
+        document.body.classList.add('modal-open');
+        investorForm.reset();
+        investorModal.setAttribute('aria-hidden', 'false');
     }
 
     function openEmailCopy(payload) {
@@ -37,8 +51,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     applyBtn.addEventListener('click', openModal);
     closeButton.addEventListener('click', closeModal);
+    investorBtn?.addEventListener('click', openInvestorModal);
+    investorClose?.addEventListener('click', closeModal);
     modal.addEventListener('click', (event) => {
         if (event.target === modal) {
+            closeModal();
+        }
+    });
+    investorModal.addEventListener('click', (event) => {
+        if (event.target === investorModal) {
             closeModal();
         }
     });
@@ -87,6 +108,44 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Application submit failed:', error);
             closeModal();
             openEmailCopy(payload);
+        }
+    });
+
+    investorForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const investorName = investorForm.elements['investor-name'].value.trim();
+        const company = investorForm.elements['investor-company'].value.trim();
+        const email = investorForm.elements['investor-email'].value.trim();
+        const phone = investorForm.elements['investor-phone'].value.trim();
+        const details = investorForm.elements['investor-details'].value.trim();
+
+        if (!investorName || !email || !phone) {
+            alert('Please fill in your name, email, and phone number before submitting.');
+            return;
+        }
+
+        const payload = { investorName, company, email, phone, details };
+
+        try {
+            const response = await fetch('/api/investor-application', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload),
+            });
+
+            const result = await response.json();
+            if (!response.ok) {
+                throw new Error(result.error || 'Server error');
+            }
+
+            closeModal();
+            alert('Thank you! Your investor information has been sent for review.');
+        } catch (error) {
+            console.error('Investor submit failed:', error);
+            alert(error.message || 'Sorry, we could not submit your investor information right now. Please try again in a moment.');
         }
     });
 });

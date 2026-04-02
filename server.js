@@ -14,6 +14,7 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'LoanApp2026!';
 const SESSION_SECRET = process.env.SESSION_SECRET || 'change-this-secret';
 const DATA_DIR = path.join(__dirname, 'data');
 const APPLICATIONS_FILE = path.join(DATA_DIR, 'applications.json');
+const INVESTOR_APPLICATIONS_FILE = path.join(DATA_DIR, 'investor-applications.json');
 const USERS_FILE = path.join(DATA_DIR, 'users.json');
 
 app.use(express.urlencoded({ extended: true }));
@@ -44,6 +45,11 @@ async function ensureDataFile() {
         await fs.access(APPLICATIONS_FILE);
     } catch {
         await fs.writeFile(APPLICATIONS_FILE, '[]', 'utf8');
+    }
+    try {
+        await fs.access(INVESTOR_APPLICATIONS_FILE);
+    } catch {
+        await fs.writeFile(INVESTOR_APPLICATIONS_FILE, '[]', 'utf8');
     }
     try {
         await fs.access(USERS_FILE);
@@ -86,6 +92,17 @@ async function readApplications() {
 async function writeApplications(applications) {
     await ensureDataFile();
     await fs.writeFile(APPLICATIONS_FILE, JSON.stringify(applications, null, 2), 'utf8');
+}
+
+async function readInvestorApplications() {
+    await ensureDataFile();
+    const contents = await fs.readFile(INVESTOR_APPLICATIONS_FILE, 'utf8');
+    return JSON.parse(contents || '[]');
+}
+
+async function writeInvestorApplications(applications) {
+    await ensureDataFile();
+    await fs.writeFile(INVESTOR_APPLICATIONS_FILE, JSON.stringify(applications, null, 2), 'utf8');
 }
 
 async function readUsers() {
@@ -133,6 +150,35 @@ app.post('/api/loan-application', async (req, res) => {
     } catch (error) {
         console.error('Failed to save loan application:', error);
         return res.status(500).json({ error: 'Unable to save application at this time.' });
+    }
+});
+
+app.post('/api/investor-application', async (req, res) => {
+    const { investorName, company, email, phone, details } = req.body;
+
+    if (!investorName || !email || !phone) {
+        return res.status(400).json({ error: 'Please complete all required fields.' });
+    }
+
+    const application = {
+        id: Date.now().toString(),
+        investorName,
+        company: company || '',
+        email,
+        phone,
+        details: details || '',
+        createdAt: new Date().toISOString(),
+    };
+
+    try {
+        const applications = await readInvestorApplications();
+        applications.push(application);
+        await writeInvestorApplications(applications);
+        console.log('Investor application saved:', application.id, application.investorName);
+        return res.status(201).json({ success: true, applicationId: application.id });
+    } catch (error) {
+        console.error('Failed to save investor application:', error);
+        return res.status(500).json({ error: 'Unable to save investor application at this time.' });
     }
 });
 
@@ -204,6 +250,16 @@ app.get('/api/applications', requireAuth, async (req, res) => {
     } catch (error) {
         console.error('Failed to load applications:', error);
         res.status(500).json({ error: 'Unable to load applications.' });
+    }
+});
+
+app.get('/api/investor-applications', requireAuth, async (req, res) => {
+    try {
+        const applications = await readInvestorApplications();
+        res.json(applications);
+    } catch (error) {
+        console.error('Failed to load investor applications:', error);
+        res.status(500).json({ error: 'Unable to load investor applications.' });
     }
 });
 

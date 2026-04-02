@@ -22,6 +22,7 @@
         <h2>Fast & Secure Lending Solutions</h2>
         <p>Get the funds you need with flexible terms and competitive rates</p>
         <a href="#" id="apply-btn" class="btn">Apply Now</a>
+        <a href="#" id="investor-btn" class="btn btn-secondary">Invest</a>
     </section>
     
     <section id="services" class="container">
@@ -97,6 +98,32 @@
                 <textarea id="details" name="details" placeholder="Tell us a bit more about your loan request"></textarea>
 
                 <button type="submit" class="btn">Send Application</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="investor-modal" class="modal" aria-hidden="true">
+        <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="investor-modal-title">
+            <button type="button" id="investor-modal-close" class="modal-close" aria-label="Close investor contact window">×</button>
+            <h2 id="investor-modal-title">Investor Contact</h2>
+            <p>Share your contact information and interest with our team.</p>
+            <form id="investor-form">
+                <label for="investor-name">Full name</label>
+                <input type="text" id="investor-name" name="investor-name" placeholder="Your name" required>
+
+                <label for="investor-company">Company / Organization</label>
+                <input type="text" id="investor-company" name="investor-company" placeholder="Company name">
+
+                <label for="investor-email">Email address</label>
+                <input type="email" id="investor-email" name="investor-email" placeholder="you@example.com" required>
+
+                <label for="investor-phone">Phone number</label>
+                <input type="tel" id="investor-phone" name="investor-phone" placeholder="(208) 555-1234" required>
+
+                <label for="investor-details">Investment interest</label>
+                <textarea id="investor-details" name="investor-details" placeholder="Tell us what type of investment opportunity you're interested in"></textarea>
+
+                <button type="submit" class="btn">Submit Investor Info</button>
             </form>
         </div>
     </div>
