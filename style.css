@@ -114,6 +114,16 @@ nav a:hover {
     box-shadow: 0 12px 24px rgba(102, 126, 234, 0.2);
 }
 
+.btn-secondary {
+    background: #293d77;
+    color: white;
+}
+
+.btn-secondary:hover {
+    transform: scale(1.05);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.22);
+}
+
 .container {
     max-width: 1200px;
     margin: 0 auto;
