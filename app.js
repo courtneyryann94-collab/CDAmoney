@@ -23,9 +23,6 @@ document.addEventListener('DOMContentLoaded', () => {
         modal.setAttribute('aria-hidden', 'true');
     }
 
-    // Temporary mode: backend submission is paused for now.
-    // The form still preserves backend logic for future use, but submissions
-    // are currently sent only via email to the admin address.
     function openEmailCopy(payload) {
         const subject = encodeURIComponent('Loan Application Request');
         const body = encodeURIComponent(
@@ -54,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    form.addEventListener('submit', (event) => {
+    form.addEventListener('submit', async (event) => {
         event.preventDefault();
 
         const loanType = form.elements['loan-type'].value.trim();
@@ -69,7 +66,27 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const payload = { loanType, fullName, email, phone, details };
-        closeModal();
-        openEmailCopy(payload);
+
+        try {
+            const response = await fetch('/api/loan-application', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload),
+            });
+
+            const result = await response.json();
+            if (!response.ok) {
+                throw new Error(result.error || 'Server error');
+            }
+
+            closeModal();
+            openEmailCopy(payload);
+        } catch (error) {
+            console.error('Application submit failed:', error);
+            closeModal();
+            openEmailCopy(payload);
+        }
     });
 });
