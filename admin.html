@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan Applications - CDAmoney</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <h1>Loan Applications</h1>
+            <ul>
+                <li><button id="add-user-btn" class="btn">Create new employee login</button></li>
+                <li><a href="/logout" class="btn">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+    <section class="container" style="padding-top: 2.5rem; padding-bottom: 2.5rem;">
+        <h2 class="section-title">Submitted Applications</h2>
+        <div id="app-list"></div>
+        <p id="add-user-message" style="margin-top: 1rem; color: #333;"></p>
+    </section>
+    <footer>
+        <p>&copy; 2024 Private Money Coeur d 'Alene Inc All rights reserved.</p>
+    </footer>
+    <script>
+        async function loadApplications() {
+            const appList = document.getElementById('app-list');
+            appList.innerHTML = '<p>Loading applications...</p>';
+
+            try {
+                const response = await fetch('/api/applications');
+                if (response.status === 401) {
+                    window.location.href = '/login';
+                    return;
+                }
+
+                const applications = await response.json();
+                if (!applications.length) {
+                    appList.innerHTML = '<p>No applications have been submitted yet.</p>';
+                    return;
+                }
+
+                appList.innerHTML = '';
+                applications
+                    .slice()
+                    .reverse()
+                    .forEach((application) => {
+                        const card = document.createElement('div');
+                        card.className = 'service-card';
+                        const createdAt = new Date(application.createdAt).toLocaleString();
+                        card.innerHTML = `
+                            <h3>${application.fullName}</h3>
+                            <p><strong>Loan type:</strong> ${application.loanType}</p>
+                            <p><strong>Email:</strong> <a href="mailto:${application.email}">${application.email}</a></p>
+                            <p><strong>Phone:</strong> ${application.phone}</p>
+                            <p><strong>Submitted:</strong> ${createdAt}</p>
+                            <p><strong>Details:</strong><br>${application.details || '<em>No additional details provided.</em>'}</p>
+                        `;
+                        appList.appendChild(card);
+                    });
+            } catch (error) {
+                console.error(error);
+                appList.innerHTML = '<p>Unable to load applications right now. Please try again later.</p>';
+            }
+        }
+
+        loadApplications();
+
+        const addUserBtn = document.getElementById('add-user-btn');
+        const addUserMessage = document.getElementById('add-user-message');
+
+        if (addUserBtn) {
+            addUserBtn.addEventListener('click', async () => {
+                addUserMessage.textContent = '';
+
+                const username = window.prompt('Enter a username for the new employee:');
+                if (!username) {
+                    return;
+                }
+
+                const password = window.prompt('Enter a password for the new employee:');
+                if (!password) {
+                    return;
+                }
+
+                try {
+                    const response = await fetch('/api/users', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ username: username.trim(), password: password.trim() }),
+                    });
+
+                    const result = await response.json();
+                    if (!response.ok) {
+                        addUserMessage.style.color = '#d64545';
+                        addUserMessage.textContent = result.error || 'Unable to create login.';
+                        return;
+                    }
+
+                    addUserMessage.style.color = '#2a8f2a';
+                    addUserMessage.textContent = `Employee login created for ${result.username}.`;
+                } catch (error) {
+                    console.error(error);
+                    addUserMessage.style.color = '#d64545';
+                    addUserMessage.textContent = 'A network error occurred. Please try again.';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
