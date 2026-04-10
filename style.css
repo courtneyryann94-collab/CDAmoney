@@ -235,6 +235,12 @@ nav a:hover {
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
 }
 
+.contact-card.contact-card-wide {
+    min-width: 260px;
+    flex: 1 1 260px;
+    max-width: 340px;
+}
+
 .contact-card h3 {
     margin-bottom: 0.75rem;
     color: #667eea;
