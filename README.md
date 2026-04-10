@@ -22,7 +22,7 @@ Landing page for Private Money Coeur d'Alene with a secure backend for loan appl
    npm start
    ```
 
-4. Open `http://localhost:3000` in your browser.
+4. Open `http://local host:3000` in your browser.
 
 ## Access admin dashboard
 
