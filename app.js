@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const investorModal = document.getElementById('investor-modal');
     const investorClose = document.getElementById('investor-modal-close');
     const investorForm = document.getElementById('investor-form');
-    const ADMIN_EMAIL = 'stevenhuffakercda@gmail.com';
+    const ADMIN_EMAIL = 'S.Huffaker@privatemoneycda.com';
 
     if (!applyBtn || !modal || !closeButton || !form) {
         return;
