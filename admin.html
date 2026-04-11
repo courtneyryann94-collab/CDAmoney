@@ -77,6 +77,31 @@
                             <p><strong>Submitted:</strong> ${createdAt}</p>
                             <p><strong>Details:</strong><br>${application.details || '<em>No additional details provided.</em>'}</p>
                         `;
+                        const deleteButton = document.createElement('button');
+                        deleteButton.type = 'button';
+                        deleteButton.className = 'btn btn-secondary';
+                        deleteButton.textContent = 'Delete';
+                        deleteButton.style.marginTop = '1rem';
+                        deleteButton.addEventListener('click', async () => {
+                            const confirmed = window.confirm('Delete this loan application? This cannot be undone.');
+                            if (!confirmed) return;
+
+                            try {
+                                const deleteResponse = await fetch(`/api/applications/${application.id}`, {
+                                    method: 'DELETE',
+                                });
+                                if (!deleteResponse.ok) {
+                                    const result = await deleteResponse.json();
+                                    throw new Error(result.error || 'Failed to delete application');
+                                }
+
+                                loadApplications();
+                            } catch (error) {
+                                console.error(error);
+                                window.alert('Unable to delete the application. Please try again.');
+                            }
+                        });
+                        card.appendChild(deleteButton);
                         appList.appendChild(card);
                     });
             } catch (error) {

@@ -253,6 +253,23 @@ app.get('/api/applications', requireAuth, async (req, res) => {
     }
 });
 
+app.delete('/api/applications/:id', requireAuth, async (req, res) => {
+    const applicationId = req.params.id;
+    try {
+        const applications = await readApplications();
+        const filtered = applications.filter((app) => app.id !== applicationId);
+        if (filtered.length === applications.length) {
+            return res.status(404).json({ error: 'Application not found.' });
+        }
+        await writeApplications(filtered);
+        console.log('Loan application deleted:', applicationId);
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Failed to delete application:', error);
+        res.status(500).json({ error: 'Unable to delete application.' });
+    }
+});
+
 app.get('/api/investor-applications', requireAuth, async (req, res) => {
     try {
         const applications = await readInvestorApplications();
