@@ -37,14 +37,22 @@ document.addEventListener('DOMContentLoaded', () => {
         investorModal.setAttribute('aria-hidden', 'false');
     }
 
-    function openEmailCopy(payload) {
-        const subject = encodeURIComponent('Loan Application Request');
+    function openEmailCopy(payload, type = 'loan') {
+        const subject = encodeURIComponent(
+            type === 'investor' ? 'Investor Application Request' : 'Loan Application Request'
+        );
         const body = encodeURIComponent(
-            `Loan type: ${payload.loanType}\n` +
-            `Name: ${payload.fullName}\n` +
-            `Email: ${payload.email}\n` +
-            `Phone: ${payload.phone}\n` +
-            `Details: ${payload.details}`
+            type === 'investor'
+                ? `Investor Name: ${payload.investorName}\n` +
+                  `Company: ${payload.company || 'N/A'}\n` +
+                  `Email: ${payload.email}\n` +
+                  `Phone: ${payload.phone}\n` +
+                  `Details: ${payload.details}`
+                : `Loan type: ${payload.loanType}\n` +
+                  `Name: ${payload.fullName}\n` +
+                  `Email: ${payload.email}\n` +
+                  `Phone: ${payload.phone}\n` +
+                  `Details: ${payload.details}`
         );
         window.location.href = `mailto:${ADMIN_EMAIL}?subject=${subject}&body=${body}`;
     }
@@ -142,10 +150,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             closeModal();
-            alert('Thank you! Your investor information has been sent for review.');
+            openEmailCopy(payload, 'investor');
         } catch (error) {
             console.error('Investor submit failed:', error);
-            alert(error.message || 'Sorry, we could not submit your investor information right now. Please try again in a moment.');
+            closeModal();
+            openEmailCopy(payload, 'investor');
         }
     });
 });

@@ -270,6 +270,23 @@ app.delete('/api/applications/:id', requireAuth, async (req, res) => {
     }
 });
 
+app.delete('/api/investor-applications/:id', requireAuth, async (req, res) => {
+    const applicationId = req.params.id;
+    try {
+        const applications = await readInvestorApplications();
+        const filtered = applications.filter((app) => app.id !== applicationId);
+        if (filtered.length === applications.length) {
+            return res.status(404).json({ error: 'Investor contact not found.' });
+        }
+        await writeInvestorApplications(filtered);
+        console.log('Investor contact deleted:', applicationId);
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Failed to delete investor contact:', error);
+        res.status(500).json({ error: 'Unable to delete investor contact.' });
+    }
+});
+
 app.get('/api/investor-applications', requireAuth, async (req, res) => {
     try {
         const applications = await readInvestorApplications();
