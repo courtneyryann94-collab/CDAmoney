@@ -54,7 +54,13 @@ document.addEventListener('DOMContentLoaded', () => {
                   `Phone: ${payload.phone}\n` +
                   `Details: ${payload.details}`
         );
-        window.location.href = `mailto:${ADMIN_EMAIL}?subject=${subject}&body=${body}`;
+        const mailtoUrl = `mailto:${ADMIN_EMAIL}?subject=${subject}&body=${body}`;
+        const link = document.createElement('a');
+        link.href = mailtoUrl;
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     }
 
     applyBtn.addEventListener('click', openModal);
