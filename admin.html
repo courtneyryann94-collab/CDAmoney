@@ -143,6 +143,39 @@
                             <p><strong>Submitted:</strong> ${createdAt}</p>
                             <p><strong>Interest:</strong><br>${application.details || '<em>No additional details provided.</em>'}</p>
                         `;
+                        const actions = document.createElement('div');
+                        actions.style.marginTop = '1rem';
+                        actions.style.display = 'flex';
+                        actions.style.flexWrap = 'wrap';
+                        actions.style.justifyContent = 'center';
+                        actions.style.gap = '0.75rem';
+
+                        const deleteButton = document.createElement('button');
+                        deleteButton.type = 'button';
+                        deleteButton.className = 'btn btn-secondary';
+                        deleteButton.textContent = 'Delete';
+                        deleteButton.addEventListener('click', async () => {
+                            const confirmed = window.confirm('Delete this investor contact? This cannot be undone.');
+                            if (!confirmed) return;
+
+                            try {
+                                const deleteResponse = await fetch(`/api/investor-applications/${application.id}`, {
+                                    method: 'DELETE',
+                                });
+                                if (!deleteResponse.ok) {
+                                    const result = await deleteResponse.json();
+                                    throw new Error(result.error || 'Failed to delete investor contact');
+                                }
+
+                                loadInvestorApplications();
+                            } catch (error) {
+                                console.error(error);
+                                window.alert('Unable to delete the investor contact. Please try again.');
+                            }
+                        });
+
+                        actions.appendChild(deleteButton);
+                        card.appendChild(actions);
                         investorList.appendChild(card);
                     });
             } catch (error) {
