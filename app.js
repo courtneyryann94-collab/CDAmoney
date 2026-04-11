@@ -55,12 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   `Details: ${payload.details}`
         );
         const mailtoUrl = `mailto:${ADMIN_EMAIL}?subject=${subject}&body=${body}`;
-        const link = document.createElement('a');
-        link.href = mailtoUrl;
-        link.style.display = 'none';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        window.location.href = mailtoUrl;
     }
 
     applyBtn.addEventListener('click', openModal);
