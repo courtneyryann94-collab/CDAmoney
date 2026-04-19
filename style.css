@@ -172,6 +172,15 @@ nav a:hover {
     line-height: 1.8;
 }
 
+.signature {
+    font-family: 'Lucida Calligraphy', 'Lucida Handwriting', 'Brush Script MT', cursive;
+    font-style: italic;
+    font-size: 1.35em;
+    color: #667eea;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
 @media (max-width: 840px) {
     .about-content {
         grid-template-columns: 1fr;
